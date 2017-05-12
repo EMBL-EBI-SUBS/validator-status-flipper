@@ -30,6 +30,7 @@ public class UpdatesListener {
 
     @RabbitListener(queues = Queues.OUTCOME_DOCUMENT_UPDATE)
     public void processUpdate(String uuid) {
+        logger.debug("Processing Outcome document update.");
         ValidationOutcome validationOutcome = repository.findOne(uuid);
 
         flipStatusIfRequired(validationOutcome, uuid);
