@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.subs.data.component.Archive;
-import uk.ac.ebi.subs.validator.data.EntityValidationOutcome;
 import uk.ac.ebi.subs.validator.data.ValidationOutcome;
 import uk.ac.ebi.subs.validator.data.ValidationOutcomeEnum;
 import uk.ac.ebi.subs.validator.repository.ValidationOutcomeRepository;
@@ -45,11 +44,11 @@ public class OutcomeDocumentService {
         List<ValidationOutcome> validationOutcomes = repository.findBySubmissionIdAndEntityUuid(submissionId, entityUuid);
 
         if (validationOutcomes.size() > 0) {
-            List<Double> doubleVersions = validationOutcomes.stream()
-                    .map(validationOutcome -> Double.valueOf(validationOutcome.getVersion()))
+            List<Integer> versions = validationOutcomes.stream()
+                    .map(validationOutcome -> Integer.valueOf(validationOutcome.getVersion()))
                     .collect(Collectors.toList());
 
-            double max = Collections.max(doubleVersions);
+            int max = Collections.max(versions);
             if (max > thisOutcomeVersion) {
                 return false;
             }
