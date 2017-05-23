@@ -29,8 +29,7 @@ public class OutcomeDocumentService {
         ValidationOutcome validationOutcome = repository.findOne(uuid);
 
         if (validationOutcome != null) { // The queried document already has been deleted.
-            if (isLatestVersion(validationOutcome.getSubmissionId(), validationOutcome.getEntityUuid(),
-                    Double.valueOf(validationOutcome.getVersion()))) {
+            if (isLatestVersion(validationOutcome.getSubmissionId(), validationOutcome.getEntityUuid(), validationOutcome.getVersion())) {
                 flipStatusIfRequired(validationOutcome, uuid);
 
                 return true;
@@ -40,16 +39,16 @@ public class OutcomeDocumentService {
         return false;
     }
 
-    private boolean isLatestVersion(String submissionId, String entityUuid, double thisOutcomeVersion) {
+    private boolean isLatestVersion(String submissionId, String entityUuid, String thisOutcomeVersion) {
         List<ValidationOutcome> validationOutcomes = repository.findBySubmissionIdAndEntityUuid(submissionId, entityUuid);
 
         if (validationOutcomes.size() > 0) {
-            List<Integer> versions = validationOutcomes.stream()
-                    .map(validationOutcome -> Integer.valueOf(validationOutcome.getVersion()))
+            List<String> versions = validationOutcomes.stream()
+                    .map(validationOutcome -> validationOutcome.getVersion())
                     .collect(Collectors.toList());
 
-            int max = Collections.max(versions);
-            if (max > thisOutcomeVersion) {
+            int max = Integer.valueOf(Collections.max(versions));
+            if (max > Integer.valueOf(thisOutcomeVersion)) {
                 return false;
             }
         }
