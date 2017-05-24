@@ -47,8 +47,8 @@ public class OutcomeDocumentService {
                     .map(validationOutcome -> validationOutcome.getVersion())
                     .collect(Collectors.toList());
 
-            int max = Integer.valueOf(Collections.max(versions));
-            if (max > Integer.valueOf(thisOutcomeVersion)) {
+            int max = Collections.max(versions);
+            if (max > thisOutcomeVersion) {
                 return false;
             }
         }
