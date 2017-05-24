@@ -39,11 +39,11 @@ public class OutcomeDocumentService {
         return false;
     }
 
-    private boolean isLatestVersion(String submissionId, String entityUuid, String thisOutcomeVersion) {
+    private boolean isLatestVersion(String submissionId, String entityUuid, int thisOutcomeVersion) {
         List<ValidationOutcome> validationOutcomes = repository.findBySubmissionIdAndEntityUuid(submissionId, entityUuid);
 
         if (validationOutcomes.size() > 0) {
-            List<String> versions = validationOutcomes.stream()
+            List<Integer> versions = validationOutcomes.stream()
                     .map(validationOutcome -> validationOutcome.getVersion())
                     .collect(Collectors.toList());
 

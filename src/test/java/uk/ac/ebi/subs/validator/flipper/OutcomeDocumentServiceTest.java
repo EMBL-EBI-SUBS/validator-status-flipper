@@ -40,7 +40,7 @@ public class OutcomeDocumentServiceTest {
     @Before
     public void setUp() {
         repository.deleteAll();
-        existingValidationOutcome = createValidationOutcome(getInitialExpectedOutcomes(), "3", "123", "456");
+        existingValidationOutcome = createValidationOutcome(getInitialExpectedOutcomes(), 3, "123", "456");
         repository.insert(existingValidationOutcome);
     }
 
@@ -89,8 +89,7 @@ public class OutcomeDocumentServiceTest {
 
     }
 
-    private ValidationOutcome createValidationOutcome(Map<Archive, Boolean> expectedOutcomes, String version,
-                                                      String submissionId, String entityUuid) {
+    private ValidationOutcome createValidationOutcome(Map<Archive, Boolean> expectedOutcomes, int version, String submissionId, String entityUuid) {
         ValidationOutcome validationOutcome = new ValidationOutcome();
         validationOutcome.setUuid(UUID.randomUUID().toString());
         validationOutcome.setExpectedOutcomes(expectedOutcomes);
