@@ -10,7 +10,7 @@ import uk.ac.ebi.subs.validator.messaging.Queues;
 
 /**
  * This class is listening on events on the validation aggregation results {@code Queue}.
- * When processing a published event it will update the {@code ValidationOutcome} document's status
+ * When processing a published event it will update the {@code ValidationResult} document's status
  * according to the availability of the validation results. If all the entity has been validated,
  * then the status will change to {@code Complete}, otherwise it will stay {@code Pending} as initially.
  */
@@ -21,18 +21,18 @@ public class StatusUpdateListener {
     private RabbitMessagingTemplate rabbitMessagingTemplate;
 
     @Autowired
-    private OutcomeDocumentService outcomeDocumentService;
+    private ValidationResultService validationResultService;
 
     @Autowired
     public StatusUpdateListener(RabbitMessagingTemplate rabbitMessagingTemplate) {
         this.rabbitMessagingTemplate = rabbitMessagingTemplate;
     }
 
-    @RabbitListener(queues = Queues.OUTCOME_DOCUMENT_UPDATE)
+    @RabbitListener(queues = Queues.VALIDATION_RESULT_DOCUMENT_UPDATE)
     public void processUpdate(String uuid) {
-        logger.debug("Processing Outcome document update with id {}.", uuid);
+        logger.debug("Processing validation result document update with id {}.", uuid);
 
-        if (!outcomeDocumentService.updateValidationOutcome(uuid)) {
+        if (!validationResultService.updateValidationResult(uuid)) {
             logger.debug("Ignoring obsolete validation documents.");
         }
     }
