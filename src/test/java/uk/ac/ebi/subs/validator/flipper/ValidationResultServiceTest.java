@@ -80,12 +80,12 @@ public class ValidationResultServiceTest {
 
         service.updateValidationResult(existingValidationResult.getUuid());
 
-        ValidationResult actualValidationOutcomeDocument = repository.findOne(existingValidationResult.getUuid());
+        ValidationResult actualValidationResultDocument = repository.findOne(existingValidationResult.getUuid());
 
-        assertThat(actualValidationOutcomeDocument.getValidationStatus() == ValidationStatus.Complete, is(true));
-        assertThat(actualValidationOutcomeDocument.getExpectedResults().get(Archive.ArrayExpress), is(true));
-        assertThat(actualValidationOutcomeDocument.getExpectedResults().get(Archive.BioSamples), is(true));
-        assertThat(actualValidationOutcomeDocument.getExpectedResults().get(Archive.Ena), is(true));
+        assertThat(actualValidationResultDocument.getValidationStatus() == ValidationStatus.Complete, is(true));
+        assertThat(actualValidationResultDocument.getExpectedResults().get(Archive.ArrayExpress), is(true));
+        assertThat(actualValidationResultDocument.getExpectedResults().get(Archive.BioSamples), is(true));
+        assertThat(actualValidationResultDocument.getExpectedResults().get(Archive.Ena), is(true));
 
     }
 

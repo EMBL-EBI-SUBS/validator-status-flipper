@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * This is a service to modify the {@code ValidationResult} status according to the entities validation outcome.
+ * This is a service to modify the {@code ValidationResult} status according to the entities validation result.
  */
 @Service
 public class ValidationResultService {
