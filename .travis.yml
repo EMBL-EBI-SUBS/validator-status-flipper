@@ -1,0 +1,22 @@
+jdk:
+  - oraclejdk8
+
+addons:
+  apt:
+    sources:
+      - mongodb-upstart
+      - mongodb-3.2-precise
+    packages:
+      - mongodb-org-server
+      - mongodb-org-shell
+
+before_script:
+  - sleep 15
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/</pre></body></html>Ztext/plain
