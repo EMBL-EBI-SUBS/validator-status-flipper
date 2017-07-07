@@ -1,8 +1,7 @@
+version '0.0.1-SNAPSHOT'
+
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
-
-version '1.0.1-SNAPSHOT'
-
 
 buildscript {
     repositories {
@@ -15,12 +14,10 @@ buildscript {
 
 repositories {
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-	maven { url "https://jitpack.io" }
 	mavenCentral()	
 }
 
-
 dependencies {
-	compile 'com.github.embl-ebi-subs:validator-common:master'
+    compile("uk.ac.ebi.subs:validator-common:1.9.0-SNAPSHOT")
 	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 }
