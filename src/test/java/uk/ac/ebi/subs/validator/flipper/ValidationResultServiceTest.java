@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationResult;
@@ -19,7 +20,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -40,11 +40,13 @@ public class ValidationResultServiceTest {
     ValidationResultService service;
 
     private ValidationResult existingValidationResult;
+    private AggregatorToFlipperEnvelope envelope;
 
     @Before
     public void setUp() {
         repository.deleteAll();
-        existingValidationResult = createValidationResult(getInitialExpectedResults(), 3, "123", "456");
+        existingValidationResult = createValidationResult(getInitialExpectedResults(), 3, "123456");
+        envelope = new AggregatorToFlipperEnvelope("123456", 3);
         repository.insert(existingValidationResult);
     }
 
@@ -52,7 +54,7 @@ public class ValidationResultServiceTest {
     public void updatingNotExistingValidationResultDocumentReturnFalse() {
         repository.delete(existingValidationResult);
 
-        assertThat(service.updateValidationResult(existingValidationResult.getUuid()), is(false));
+        assertThat(service.updateValidationResult(envelope), is(false));
     }
 
     @Test
@@ -62,7 +64,7 @@ public class ValidationResultServiceTest {
         existingValidationResult.getExpectedResults().put(ValidationAuthor.Taxonomy, Arrays.asList(new SingleValidationResult()));
         repository.save(existingValidationResult);
 
-        service.updateValidationResult(existingValidationResult.getUuid());
+        service.updateValidationResult(envelope);
 
         ValidationResult actualValidationResultDocument = repository.findOne(existingValidationResult.getUuid());
 
@@ -82,7 +84,7 @@ public class ValidationResultServiceTest {
         existingValidationResult.getExpectedResults().put(ValidationAuthor.Ena, Arrays.asList(new SingleValidationResult()));
         repository.save(existingValidationResult);
 
-        service.updateValidationResult(existingValidationResult.getUuid());
+        service.updateValidationResult(envelope);
 
         ValidationResult actualValidationResultDocument = repository.findOne(existingValidationResult.getUuid());
 
@@ -93,14 +95,11 @@ public class ValidationResultServiceTest {
 
     }
 
-    private ValidationResult createValidationResult(Map<ValidationAuthor, List<SingleValidationResult>> expectedResults, int version, String submissionId, String entityUuid) {
+    private ValidationResult createValidationResult(Map<ValidationAuthor, List<SingleValidationResult>> expectedResults, int version, String resultUuid) {
         ValidationResult validationResult = new ValidationResult();
-        validationResult.setUuid(UUID.randomUUID().toString());
+        validationResult.setUuid(resultUuid);
         validationResult.setExpectedResults(expectedResults);
         validationResult.setVersion(version);
-        validationResult.setSubmissionId(submissionId);
-        validationResult.setEntityUuid(entityUuid);
-
         return validationResult;
     }
 

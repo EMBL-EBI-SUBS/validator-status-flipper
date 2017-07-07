@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
 import uk.ac.ebi.subs.validator.messaging.Queues;
 
 /**
@@ -29,10 +30,10 @@ public class StatusUpdateListener {
     }
 
     @RabbitListener(queues = Queues.VALIDATION_RESULT_DOCUMENT_UPDATE)
-    public void processUpdate(String uuid) {
-        logger.debug("Processing validation result document update with id {}.", uuid);
+    public void processUpdate(AggregatorToFlipperEnvelope envelope) {
+        logger.debug("Processing validation result document update with id {}.", envelope.getValidationResultUuid());
 
-        if (!validationResultService.updateValidationResult(uuid)) {
+        if (!validationResultService.updateValidationResult(envelope)) {
             logger.debug("Ignoring obsolete validation documents.");
         }
     }
