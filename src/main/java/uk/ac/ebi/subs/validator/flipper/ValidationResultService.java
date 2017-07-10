@@ -4,12 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.ac.ebi.subs.data.component.Archive;
+import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
+import uk.ac.ebi.subs.validator.data.SingleValidationResult;
+import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationResult;
 import uk.ac.ebi.subs.validator.data.ValidationStatus;
 import uk.ac.ebi.subs.validator.repository.ValidationResultRepository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,43 +26,29 @@ public class ValidationResultService {
     @Autowired
     private ValidationResultRepository repository;
 
-    public boolean updateValidationResult(String uuid) {
-        ValidationResult validationResult = repository.findOne(uuid);
+    public boolean updateValidationResult(AggregatorToFlipperEnvelope envelope) {
+        ValidationResult validationResult = repository.findOne(envelope.getValidationResultUuid());
 
-        if (validationResult != null) { // The queried document already has been deleted.
-            if (isLatestVersion(validationResult.getSubmissionId(), validationResult.getEntityUuid(), validationResult.getVersion())) {
-                flipStatusIfRequired(validationResult, uuid);
-
+        if (validationResult != null) {
+            if (validationResult.getVersion() == envelope.getValidationResultVersion()) {
+                flipStatusIfRequired(validationResult);
                 return true;
             }
         }
-
         return false;
     }
 
-    private boolean isLatestVersion(String submissionId, String entityUuid, int thisValidationResultVersion) {
-        List<ValidationResult> validationResults = repository.findBySubmissionIdAndEntityUuid(submissionId, entityUuid);
+    private void flipStatusIfRequired(ValidationResult validationResult) {
+        Map<ValidationAuthor, List<SingleValidationResult>> validationResults = validationResult.getExpectedResults();
 
-        if (validationResults.size() > 0) {
-            List<Integer> versions = validationResults.stream()
-                    .map(validationResult -> validationResult.getVersion())
-                    .collect(Collectors.toList());
-
-            int max = Collections.max(versions);
-            if (max > thisValidationResultVersion) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void flipStatusIfRequired(ValidationResult validationResult, String uuid) {
-        Map<Archive, Boolean> validationResults = validationResult.getExpectedResults();
-        if (!validationResults.values().contains(false)){
+        if (validationResults.values().stream().filter(list -> list.isEmpty()).collect(Collectors.toList()).isEmpty()) {
             validationResult.setValidationStatus(ValidationStatus.Complete);
             repository.save(validationResult);
 
-            logger.info("Validation result document with id {} is completed.", uuid);
+            logger.info("Validation result document with id {} is completed.", validationResult.getUuid());
+        } else {
+            logger.debug("Validation for document with id {} is still in process.", validationResult.getUuid());
         }
     }
+
 }
