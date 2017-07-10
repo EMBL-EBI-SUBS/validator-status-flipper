@@ -46,8 +46,9 @@ public class ValidationResultService {
             repository.save(validationResult);
 
             logger.info("Validation result document with id {} is completed.", validationResult.getUuid());
+        } else {
+            logger.debug("Validation for document with id {} is still in process.", validationResult.getUuid());
         }
-        logger.debug("Validation for document with id {} is still in process.", validationResult.getUuid());
     }
 
 }
