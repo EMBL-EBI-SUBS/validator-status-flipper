@@ -1,4 +1,5 @@
-version '0.0.1-SNAPSHOT'
+group 'uk.ac.ebi.subs'
+version '0.1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
