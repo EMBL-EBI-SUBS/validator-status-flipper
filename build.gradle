@@ -3,6 +3,7 @@ version '0.1.0-SNAPSHOT'
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'maven'
 
 buildscript {
     repositories {
@@ -21,4 +22,49 @@ repositories {
 dependencies {
     compile("uk.ac.ebi.subs:validator-common:1.11.0-SNAPSHOT")
 	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2") {
+                if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots") {
+                if (project.hasProperty('ossrhUsername') && project.hasProperty('ossrhPassword')) {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+            }
+
+            pom.project {
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                url 'https://github.com/EMBL-EBI-SUBS/validator-status-flipper'
+
+                scm {
+                    url 'https://github.com/EMBL-EBI-SUBS/validator-status-flipper.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'subs-internal'
+                        name 'EMBL-EBI-SUBS'
+                        email 'subs-internal@ebi.ac.uk'
+                    }
+                }
+            }
+        }
+    }
 }
