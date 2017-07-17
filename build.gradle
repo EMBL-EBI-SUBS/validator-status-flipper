@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile("uk.ac.ebi.subs:validator-common:1.11.0-SNAPSHOT")
+    compile("uk.ac.ebi.subs:validator-common:1.16.0-SNAPSHOT")
 	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
 }
 
