@@ -110,6 +110,20 @@ remotes {
     }
 }
 
+task('externalCiTest', type: Test) {
+    useJUnit {
+        excludeCategories 'uk.ac.ebi.subs.validator.flipper.config.MongoDBDependentTest'
+    }
+    testLogging {
+        exceptionFormat = 'full'
+    }
+
+    configure(externalCiTest) {
+        group = "verification"
+        description = 'Run tests appropriate for our external CI environment'
+    }
+}
+
 task deployJar(type: SshTask, dependsOn: 'assemble') {
     doLast {
         def deployHome = "/data/" + project.name;
