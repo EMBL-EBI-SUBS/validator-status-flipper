@@ -2,6 +2,7 @@ package uk.ac.ebi.subs.validator.flipper;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -13,6 +14,7 @@ import uk.ac.ebi.subs.validator.data.SingleValidationResult;
 import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationResult;
 import uk.ac.ebi.subs.validator.data.ValidationStatus;
+import uk.ac.ebi.subs.validator.flipper.config.MongoDBDependentTest;
 import uk.ac.ebi.subs.validator.repository.ValidationResultRepository;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @EnableMongoRepositories(basePackageClasses = ValidationResultRepository.class)
+@Category(MongoDBDependentTest.class)
 @EnableAutoConfiguration
 @SpringBootTest(classes = ValidationResultService.class)
 public class ValidationResultServiceTest {

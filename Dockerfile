@@ -11,6 +11,8 @@ ADD gradle ./gradle
 ADD src ./src
 
 COPY gradlew gradle.properties.enc build.gradle ./
+# test
+RUN ./gradlew externalCiTest
 # build the code
 RUN ./gradlew assemble
 
