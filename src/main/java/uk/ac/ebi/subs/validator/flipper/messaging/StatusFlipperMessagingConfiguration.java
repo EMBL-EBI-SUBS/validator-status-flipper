@@ -42,17 +42,17 @@ public class StatusFlipperMessagingConfiguration {
     }
 
     /**
-     * Create a {@link Binding} between the validation exchange and the validation result document queue
+     * Create a {@link Binding} between the submission exchange and the validation result document queue
      * using the routing key of validation result document updated.
      *
      * @param validationResultDocumentQueue {@link Queue} for validation result document events
-     * @param validationExchange {@link TopicExchange} for validation
+     * @param submissionExchange {@link TopicExchange} for validation
      * @return a {@link Binding} between the validation exchange and the validation result document queue
      * using the routing key of validation result document updated.
      */
     @Bean
-    Binding validationResultDocumentUpdatedBinding(Queue validationResultDocumentQueue, TopicExchange validationExchange) {
-        return BindingBuilder.bind(validationResultDocumentQueue).to(validationExchange)
+    Binding validationResultDocumentUpdatedBinding(Queue validationResultDocumentQueue, TopicExchange submissionExchange) {
+        return BindingBuilder.bind(validationResultDocumentQueue).to(submissionExchange)
                 .with(RoutingKeys.EVENT_VALIDATION_RESULT_DOCUMENT_UPDATED);
     }
 }
