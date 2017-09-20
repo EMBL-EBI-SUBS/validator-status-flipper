@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.GlobalValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.ValidationAuthor;
 import uk.ac.ebi.subs.validator.repository.ValidationResultRepository;
 
 import java.util.List;
@@ -42,7 +42,7 @@ public class ValidationResultService {
         Map<ValidationAuthor, List<SingleValidationResult>> validationResults = validationResult.getExpectedResults();
 
         if (validationResults.values().stream().filter(list -> list.isEmpty()).collect(Collectors.toList()).isEmpty()) {
-            validationResult.setValidationStatus(ValidationStatus.Complete);
+            validationResult.setValidationStatus(GlobalValidationStatus.Complete);
             repository.save(validationResult);
 
             logger.info("Validation result document with id {} is completed.", validationResult.getUuid());

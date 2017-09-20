@@ -11,9 +11,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
 import uk.ac.ebi.subs.validator.data.SingleValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationAuthor;
 import uk.ac.ebi.subs.validator.data.ValidationResult;
-import uk.ac.ebi.subs.validator.data.ValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.GlobalValidationStatus;
+import uk.ac.ebi.subs.validator.data.structures.ValidationAuthor;
 import uk.ac.ebi.subs.validator.flipper.config.MongoDBDependentTest;
 import uk.ac.ebi.subs.validator.repository.ValidationResultRepository;
 
@@ -62,7 +62,7 @@ public class ValidationResultServiceTest {
 
     @Test
     public void notAllEntityHasBeenValidatedShouldLeaveValidationStatusPending() {
-        assertThat(existingValidationResult.getValidationStatus() == ValidationStatus.Pending, is(true));
+        assertThat(existingValidationResult.getValidationStatus() == GlobalValidationStatus.Pending, is(true));
 
         existingValidationResult.getExpectedResults().put(ValidationAuthor.Taxonomy, Arrays.asList(new SingleValidationResult()));
         repository.save(existingValidationResult);
@@ -71,7 +71,7 @@ public class ValidationResultServiceTest {
 
         ValidationResult actualValidationResultDocument = repository.findOne(existingValidationResult.getUuid());
 
-        assertThat(actualValidationResultDocument.getValidationStatus() == ValidationStatus.Pending, is(true));
+        assertThat(actualValidationResultDocument.getValidationStatus() == GlobalValidationStatus.Pending, is(true));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Taxonomy).isEmpty(), is(false));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Biosamples), is(new ArrayList<>()));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Ena), is(new ArrayList<>()));
@@ -80,7 +80,7 @@ public class ValidationResultServiceTest {
 
     @Test
     public void allEntityHasBeenValidatedShouldChangeValidationStatusToComplete() {
-        assertThat(existingValidationResult.getValidationStatus() == ValidationStatus.Pending, is(true));
+        assertThat(existingValidationResult.getValidationStatus() == GlobalValidationStatus.Pending, is(true));
 
         existingValidationResult.getExpectedResults().put(ValidationAuthor.Taxonomy, Arrays.asList(new SingleValidationResult()));
         existingValidationResult.getExpectedResults().put(ValidationAuthor.Biosamples, Arrays.asList(new SingleValidationResult()));
@@ -91,7 +91,7 @@ public class ValidationResultServiceTest {
 
         ValidationResult actualValidationResultDocument = repository.findOne(existingValidationResult.getUuid());
 
-        assertThat(actualValidationResultDocument.getValidationStatus() == ValidationStatus.Complete, is(true));
+        assertThat(actualValidationResultDocument.getValidationStatus() == GlobalValidationStatus.Complete, is(true));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Taxonomy).isEmpty(), is(false));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Biosamples).isEmpty(), is(false));
         assertThat(actualValidationResultDocument.getExpectedResults().get(ValidationAuthor.Ena).isEmpty(), is(false));
