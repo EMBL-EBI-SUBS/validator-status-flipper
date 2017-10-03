@@ -7,7 +7,8 @@ import org.springframework.amqp.rabbit.core.RabbitMessagingTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.ebi.subs.validator.data.AggregatorToFlipperEnvelope;
-import uk.ac.ebi.subs.validator.messaging.Queues;
+
+import static uk.ac.ebi.subs.validator.flipper.messaging.StatusFlipperQueues.VALIDATION_RESULT_DOCUMENT_UPDATE;
 
 /**
  * This class is listening on events on the validation aggregation results {@code Queue}.
@@ -29,7 +30,7 @@ public class StatusUpdateListener {
         this.rabbitMessagingTemplate = rabbitMessagingTemplate;
     }
 
-    @RabbitListener(queues = Queues.VALIDATION_RESULT_DOCUMENT_UPDATE)
+    @RabbitListener(queues = VALIDATION_RESULT_DOCUMENT_UPDATE)
     public void processUpdate(AggregatorToFlipperEnvelope envelope) {
         logger.debug("Processing validation result document update with id {}.", envelope.getValidationResultUuid());
 

@@ -8,9 +8,11 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import uk.ac.ebi.subs.validator.messaging.Queues;
-import uk.ac.ebi.subs.validator.messaging.RoutingKeys;
-import uk.ac.ebi.subs.validator.messaging.ValidationExchangeConfig;
+import uk.ac.ebi.subs.messaging.ExchangeConfig;
+import uk.ac.ebi.subs.messaging.Queues;
+
+import static uk.ac.ebi.subs.validator.flipper.messaging.StatusFlipperQueues.VALIDATION_RESULT_DOCUMENT_UPDATE;
+import static uk.ac.ebi.subs.validator.flipper.messaging.StatusFlipperRoutingKeys.EVENT_VALIDATION_RESULT_DOCUMENT_UPDATED;
 
 /**
  * Messaging configuration for the validator status flipper service.
@@ -18,7 +20,7 @@ import uk.ac.ebi.subs.validator.messaging.ValidationExchangeConfig;
  * Created by karoly on 17/07/2017.
  */
 @Configuration
-@ComponentScan(basePackageClasses = ValidationExchangeConfig.class)
+@ComponentScan(basePackageClasses = ExchangeConfig.class)
 public class StatusFlipperMessagingConfiguration {
 
     /**
@@ -38,7 +40,7 @@ public class StatusFlipperMessagingConfiguration {
      */
     @Bean
     Queue validationResultDocumentQueue() {
-        return new Queue(Queues.VALIDATION_RESULT_DOCUMENT_UPDATE, true);
+        return Queues.buildQueueWithDlx(VALIDATION_RESULT_DOCUMENT_UPDATE);
     }
 
     /**
@@ -53,6 +55,6 @@ public class StatusFlipperMessagingConfiguration {
     @Bean
     Binding validationResultDocumentUpdatedBinding(Queue validationResultDocumentQueue, TopicExchange submissionExchange) {
         return BindingBuilder.bind(validationResultDocumentQueue).to(submissionExchange)
-                .with(RoutingKeys.EVENT_VALIDATION_RESULT_DOCUMENT_UPDATED);
+                .with(EVENT_VALIDATION_RESULT_DOCUMENT_UPDATED);
     }
 }
